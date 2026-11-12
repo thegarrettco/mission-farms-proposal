@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pricing Proposal | Garrett Construction</title>
 <script>document.documentElement.classList.add("js")</script>
+<script>
+/* Phones: stay on the light theme even when the phone is set to dark mode */
+if (matchMedia("(max-width: 640px)").matches && !document.documentElement.hasAttribute("data-theme")) {
+  document.documentElement.setAttribute("data-theme", "light");
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Stand-in for DIN Condensed on machines that don't have it installed -->
@@ -638,6 +644,40 @@ strong, b{ font-weight:500; }
   .tgc-portfolio *{ animation:none !important; }
   .nav__progress, .footer__top, .tgc-key__hint, .office__go{ display:none !important; }
 }
+
+/* ============================================================
+   PHONE REFINEMENTS (desktop unaffected)
+   ============================================================ */
+@media (max-width: 640px){
+
+  /* Cover: eyebrow stays on one line (the script in step 3 sizes it to fit) */
+  .hero__eyebrow{ white-space:nowrap; letter-spacing:.08em; }
+
+  /* Cover: the word-reveal mask was clipping the tops of the capitals */
+  .hero__title .w{ padding-top:.14em; margin-top:-.14em; }
+
+  /* Cover: more room between "162 apartment homes..." and the blue stats band */
+  .hero__body{ padding-bottom:56px; }
+
+  /* Cost by Division: freeze Div. and Description while the numbers scroll */
+  .sov{ border-collapse:separate; border-spacing:0; }
+  .sov th:nth-child(1), .sov td:nth-child(1){
+    position:sticky; left:0; z-index:2;
+    box-sizing:border-box; width:48px; min-width:48px; max-width:48px;
+    padding-left:12px; padding-right:6px;
+  }
+  .sov th:nth-child(2), .sov td:nth-child(2){
+    position:sticky; left:48px; z-index:2;
+    box-sizing:border-box; width:150px; min-width:150px; max-width:150px;
+    padding-left:8px; padding-right:12px;
+    box-shadow:6px 0 8px -6px rgba(0,0,0,.22);
+  }
+  .sov thead th:nth-child(-n+2){ z-index:3; }
+  /* Frozen cells need a solid fill so the scrolling numbers slide under them */
+  .sov tbody td:nth-child(-n+2){ background:var(--card); }
+  .sov tr.sub td:nth-child(-n+2),
+  .sov tr.mk td:nth-child(-n+2){ background:var(--card) !important; }
+}
 </style>
 </head>
 
@@ -775,7 +815,7 @@ const PROPOSAL = {
     zoom:  15
   },
   sitePlan:    null,                        // optional site plan image (shown only if no siteMap is set)
-  pdfUrl:      "https://4f7dd487-75f6-423f-bb94-9b388e6f9bc4.usrfiles.com/ugd/4f7dd4_2fd6e49a45aa4e3088762cdacd0745c3.pdf",
+  pdfUrl:      "https://4f7dd487-75f6-423f-bb94-9b388e6f9bc4.usrfiles.com/ugd/4f7dd4_fcb677bb22e8474b97fa5d4b2722cefe.pdf",
   pdfFileName: "Mission Farms Pricing Proposal.pdf",
   sovFileUrl:  null,                        // link to the line-item SOV (Excel)
   clarificationsUrl: null,                  // link to the full clarifications list
@@ -1568,6 +1608,25 @@ function initMotion(){
   $("#app").innerHTML = hero() + nav() + summary() + cost() + scope() + ideas() + schedule() + about() + team() + footer();
   $("#draft").innerHTML = draftBanner();
   wireCost(); wireGantt(); wirePlan(); wireNav(); wireMap(); initMotion();
+})();
+</script>
+<script>
+/* Phones: ease the cover eyebrow's size down until it fits on one line */
+(function(){
+  const mq = matchMedia("(max-width: 640px)");
+  function fit(){
+    const el = document.querySelector(".hero__eyebrow");
+    if (!el) return;
+    el.style.fontSize = "";
+    if (!mq.matches) return;
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth && size > 8) {
+      size -= 0.25;
+      el.style.fontSize = size + "px";
+    }
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit);
+  addEventListener("resize", fit);
 })();
 </script>
 </body>
